@@ -2388,12 +2388,12 @@ const MyApp = () => {
                         }}
                     />
                 </div>
-                <Button
+                {/**<Button
                     onClick={() => {
                         setShow(true)
                     }}>
                     快速下单
-                </Button>
+                </Button> */}
                 <Button
                     type="primary"
                     onClick={() => {
