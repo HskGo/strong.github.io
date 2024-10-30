@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>K-Line with ZigZag Indicator</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <script src="./js/axios.min.js"></script>
+    </head>
+    <body>
+        <div id="chart" style="width: 100%; height: 600px"></div>
+        <script>
+            function calculateRSI(prices, period = 6) {
+                if (prices.length < period) return null
+
+                let gains = 0
+                let losses = 0
+
+                for (let i = 1; i < period; i++) {
+                    const difference = prices[i] - prices[i - 1]
+                    if (difference > 0) {
+                        gains += difference
+                    } else {
+                        losses -= difference // losses是负数，累加时取负
+                    }
+                }
+
+                let averageGain = gains / period
+                let averageLoss = losses / period
+
+                let rsiValues = []
+
+                // 第一个RSI值
+                let rs = averageLoss === 0 ? 100 : averageGain / averageLoss
+                let rsi = 100 - 100 / (1 + rs)
+                rsiValues.push(rsi)
+
+                // 计算后续的RSI值
+                for (let i = period; i < prices.length; i++) {
+                    const difference = prices[i] - prices[i - 1]
+                    if (difference > 0) {
+                        averageGain = (averageGain * (period - 1) + difference) / period
+                        averageLoss = (averageLoss * (period - 1)) / period
+                    } else {
+                        averageGain = (averageGain * (period - 1)) / period
+                        averageLoss = (averageLoss * (period - 1) - difference) / period
+                    }
+
+                    rs = averageLoss === 0 ? 100 : averageGain / averageLoss
+                    rsi = 100 - 100 / (1 + rs)
+                    rsiValues.push(rsi)
+                }
+
+                return rsiValues
+            }
+            // // 计算EMA函数
+            function calculateEMA(data, period) {
+                const k = 2 / (period + 1)
+                let emaArray = [data[0]] // 初始EMA值为第一个数据
+
+                for (let i = 1; i < data.length; i++) {
+                    emaArray.push(data[i] * k + emaArray[i - 1] * (1 - k))
+                }
+                return emaArray
+            }
+            // 获取K线数据
+            async function fetchKlineData(symbol, interval, limit) {
+                const url = `https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`
+                const response = await fetch(url)
+                const data = await response.json()
+                return data.map((item) => parseFloat(item[4]))
+            }
+
+            async function main(params) {
+                const prices = await fetchKlineData('OPUSDT', '1m', '50')
+                const rsi = calculateEMA(calculateRSI(prices, 6), 3).slice(-1).join()
+                console.log(rsi)
+            }
+
+            main()
+            // 调用示例
+        </script>
+    </body>
+</html>
