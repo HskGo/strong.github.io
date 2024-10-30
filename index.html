@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>筛选多空排列</title>
+        <!-- 引入axios -->
+        <script src="./js/axios.min.js"></script>
+        <!-- 引入react -->
+        <script src="./js/react.production.min.js"></script>
+        <script src="./js/react-dom.production.min.js"></script>
+        <script src="./js/babel.min.js"></script>
+        <script src="./js/antd.min.js"></script>
+        <script src="./js/index.umd.min.js"></script>
+        <script src="./js/echarts.min.js"></script>
+        <!-- CSS -->
+        <link rel="stylesheet" href="./css/antd.css" />
+        <style>
+            .ant-table-thead > tr > th,
+            .ant-table-tbody > tr > td,
+            .ant-table tfoot > tr > th,
+            .ant-table tfoot > tr > td {
+                position: relative;
+                padding: 8px;
+                overflow-wrap: break-word;
+            }
+
+            .button_box {
+                display: flex;
+                justify-content: space-between;
+                justify-items: center;
+            }
+
+            .tips {
+                position: absolute;
+                background: #b9b9b9;
+                border: 1px solid #b9b9b9;
+                padding: 5px;
+                border-radius: 4px;
+                z-index: 999;
+                top: 18px;
+                right: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="root"></div>
+        <script type="text/babel" src="./js/index.js"></script>
+    </body>
+</html>
